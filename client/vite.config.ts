@@ -10,6 +10,7 @@ export default defineConfig({
     proxy: {
       "/api": "http://localhost:3000/",
     },
+    allowedHosts: ["skilled-glowing-squirrel.ngrok-free.app"], // Add this line
   },
   build: {
     outDir: "./build",

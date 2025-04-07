@@ -7,6 +7,9 @@ import {
   handleGetWorldDetails,
   handleUpdateWorldDataObject,
   handleFireToast,
+  handleSetDataObject,
+  handleFetchDataObject,
+  handleDeleteToast,
 } from "./controllers/index.js";
 import { getVersion } from "./utils/getVersion.js";
 
@@ -39,9 +42,23 @@ router.post("/remove-dropped-assets", handleRemoveDroppedAssetsByUniqueName);
 // Visitor
 router.get("/visitor", handleGetVisitor);
 
+
 // World
 router.get("/world", handleGetWorldDetails);
 router.put("/world/data-object", handleUpdateWorldDataObject);
-router.put("/world/fire-toast", handleFireToast);
+
+
+// new route to fire toast immediately
+router.post("/world/fire-toast", handleFireToast);
+
+// new route to update world object and schedule toasts
+router.post("/world/handle-schedule-toast", handleSetDataObject); 
+
+// new route to update world object by deleting a toast
+router.post("/world/handle-delete-toast", handleDeleteToast);
+
+// new route to fetch world data object
+router.get("/world/handle-get-toasts", handleFetchDataObject) 
+
 
 export default router;
