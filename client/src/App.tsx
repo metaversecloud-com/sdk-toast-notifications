@@ -11,6 +11,7 @@ import { InteractiveParams, SET_HAS_SETUP_BACKEND, SET_INTERACTIVE_PARAMS } from
 
 // utils
 import { setupBackendAPI } from "./utils/backendAPI";
+import ScheduledMessages from "./pages/ScheduledMessages";
 
 const App = () => {
   const navigate = useNavigate();
@@ -80,6 +81,7 @@ const App = () => {
   return (
     <Routes>
       <Route path="/" element={<Home />} />
+      <Route path="/scheduled-messages" element={<ScheduledMessages />} />
       <Route path="*" element={<Error />} />
     </Routes>
   );
