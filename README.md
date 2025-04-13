@@ -4,9 +4,14 @@ Please update the following in each of your SDK application.
 
 ## Introduction / Summary
 
-This boilerplate is meant to give you a simple starting point to build new features in Topia using our Javascript SDK. Please reference the [documentation](https://metaversecloud-com.github.io/mc-sdk-js/index.html) for a more detailed breakdown of what the SDK is capable of and how to use it!
+This boilerplate is meant to give you a simple starting point to build new features in Topia using our Javascript SDK. Please reference the [documentation](https://metaversecloud-com.github.io/mc-sdk-js/index.html) for a more detailed breakdown of what the SDK is capable of and how to use it! This SDk application allows admins of a world to send announcements (Toasts) at a given time. They can also delete scheduled messages if they chose to.
 
 ## Key Features
+
+- An admin can send a toast immediately
+- An admin can schedule toasts for a given time in the future
+- An admin can schedule multiple toasts for the same time
+- An admin can delete and view scheduled toasts
 
 ### Canvas elements & interactions
 
@@ -14,43 +19,34 @@ This boilerplate is meant to give you a simple starting point to build new featu
 
 ### Drawer content
 
-- How to play instructions
-- Leaderboard
-- Admin features (see below)
+- Title and Message textfields to create the toast message
+- "Send Now" button that will immediately send a toast
+- Calender Scheduler to pick a date and time for a scheduled toast
+- "Schedule Send" button that will schedule the toast at the given time
+- "View Scheduled Messages" button that will bring the user to another page where they can view and delete scheduled messages
 
 ### Admin features
 
 _Does your app have special admin functionality? If so your key features may looks something like this:_
 
-- Access: Click on the key asset to open the drawer and then select the Admin tab. Any changes you make here will only affect this instance of the application and will not impact other instances dropped in this or other worlds.
-- Theme selection: Use the dropdown to select a theme.
-- Reset: Click on the Reset button to clear the active game state and rebuild the game board in it's default state.
-
-### Themes description
-
-- Winter (default): A snowy theme that when selected will drop snowflakes throughout the scene
-- Spring: A garden theme that when selected will drop flowers throughout the scene
+- Access: Click on the key asset to open the iframe and admins will be immediately recognized and see the view with the toast scheduler.
+- Toast scheduler: Use the text fields, calender scheduler, and "Send Now" or "Schedule Send" buttons to send a toast to visitors in the world.
+- Deletion: Click on the "View Scheduled Messages" button to view messages scheduled and there will be a red X button on each message that you can click to delete.
 
 ### Data objects
 
 _We use data objects to store information about each implementation of the app per world._
 
-- Key Asset: the data object attached to the dropped key asset will store information related to this specific implementation of the app and would be deleted if the key asset is removed from world. Example data:
-  - isResetInProgress
-  - lastInteraction
-  - lastPlayerTurn
-  - playerCount
-  - resetCount
-  - turnCount
-- World: the data object attached to the world will store analytics information for every instance of the app in a given world by keyAssetId and will persist even if a specific instance is removed from world. Example data:
-  - gamesPlayedByUser (`keyAssets.${assetId}.gamesPlayedByUser.${profileId}.count`)
-  - gamesWonByUser (`keyAssets.${keyAssetId}.gamesWonByUser.${profileId}.count`)
-  - totalGamesResetCount (`keyAssets.${assetId}.totalGamesResetCount`)
-  - totalGamesWonCount (`keyAssets.${assetId}.totalGamesWonCount`)
+- World: the data object attached to the world will store toast information for every instance of the app in a given world by visitorID followed by a unique job_id for each scheduled message.
+Structure of the world data object:
 
-## Developers:
-
-### Built With
+`[messages.${profileId}.${jobId}]: {
+                title,
+                message,
+                date_scheduled,
+                date_created,
+                job_id: jobId,
+            }`
 
 #### Client
 
