@@ -26,11 +26,12 @@ export const handleSetDataObject = async (req: Request, res: Response) => {
 
         // parsing schedule date so I can add it to cron (uses local time)
         const scheduleDate = new Date(date_scheduled);
-        const min = scheduleDate.getMinutes();
-        const hour = scheduleDate.getHours();
-        const day = scheduleDate.getDate();
-        const month = scheduleDate.getMonth() + 1;
+        const min = scheduleDate.getUTCMinutes();
+        const hour = scheduleDate.getUTCHours();
+        const day = scheduleDate.getUTCDate();
+        const month = scheduleDate.getUTCMonth() + 1;
         const cronTime = `${min} ${hour} ${day} ${month} *`;
+        console.log(cronTime);
         
 
         let jobId = crypto.randomUUID(); // used to generate unique id
