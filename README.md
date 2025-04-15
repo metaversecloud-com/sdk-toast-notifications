@@ -27,8 +27,6 @@ This boilerplate is meant to give you a simple starting point to build new featu
 
 ### Admin features
 
-_Does your app have special admin functionality? If so your key features may looks something like this:_
-
 - Access: Click on the key asset to open the iframe and admins will be immediately recognized and see the view with the toast scheduler.
 - Toast scheduler: Use the text fields, calender scheduler, and "Send Now" or "Schedule Send" buttons to send a toast to visitors in the world.
 - Deletion: Click on the "View Scheduled Messages" button to view messages scheduled and there will be a red X button on each message that you can click to delete.
@@ -45,7 +43,7 @@ Structure of the world data object:
                 message,
                 date_scheduled,
                 date_created,
-                job_id: jobId,
+                job_id,
             }`
 
 #### Client
