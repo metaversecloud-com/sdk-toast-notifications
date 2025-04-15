@@ -14,7 +14,8 @@ export const handleSetDataObject = async (req: Request, res: Response) => {
         const { title, message, date_scheduled } = req.body;
         // This currently gives the date in UTC time
         const currentDate = new Date();
-        const formattedDate = currentDate.toISOString().slice(0, 16); // This will give you YYYY-MM-DDTHH:MM
+        const formattedDate = currentDate.toLocaleString("sv-SE", { hour12: false }).replace(" ", "T").slice(0, 16);
+
         const world = World.create(credentials.urlSlug, { credentials });
 
 
@@ -36,10 +37,6 @@ export const handleSetDataObject = async (req: Request, res: Response) => {
         while (scheduledJobs[jobId]) {
             jobId = crypto.randomUUID(); // assign a new id if the jobId already exists
         }
-
-        // grab data object 
-        // do dataobject.profileid and then copy the data and removed whatever you want to delete from that copied data
-        // update dataobject.profileid and then paste the local copy that has the thing removed
 
         // scheduling messages to be sent - adding to cron
         scheduledJobs[jobId] = cron.schedule(cronTime, async () => {

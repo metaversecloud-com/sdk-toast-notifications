@@ -29,12 +29,16 @@ const Home = () => {
   const [scheduledDateTime, setScheduledDateTime] = useState(""); // stores date and time
   const [successMessage, setSuccessMessage] = useState(""); // Success message state
   const [isAdminLoading, setIsAdminLoading] = useState(true); // Track loading state for admin check
+  const [errorMessage, setErrorMessageText] = useState(""); // Error message state
+
+
   const navigate = useNavigate();
+
 
   // useeffect 
   // Fetch visitor info on mount
   useEffect(() => {
-    if (!hasSetupBackend) return; // Don't fetch until backend is setup
+    if (!hasSetupBackend || isAdmin != null) return; // Don't fetch until backend is setup
   
     const fetchVisitor = async () => {
       try {
@@ -48,30 +52,31 @@ const Home = () => {
         console.error("Visitor fetch error:", error);
         setIsAdmin(null); // Stay neutral on error
       } finally {
-        setIsLoading(false);
         setIsAdminLoading(false);
       }
     };
   
     fetchVisitor();
-  }, [hasSetupBackend]); // The effect will re-run whenever `hasSetupBackend` changes
-
+  }, [hasSetupBackend, isAdmin]); // The effect will re-run whenever `hasSetupBackend` changes
 
   // function to fire toast immediately
   const handleFireToast = async () => {
     setAreButtonsDisabled(true);
-    if (!title || !message ) {
-      alert("Please enter a title and message before sending immediately.");  // error checking
+    if (!title || !message) {
+      setErrorMessageText("Please enter a title and message before sending immediately.");
+      setSuccessMessage("");
       setAreButtonsDisabled(false);
       return;
-    }
+    } 
+    setSuccessMessage("");   
     backendAPI
       .post("/world/fire-toast", {  // firing toast immediately
         title: title, 
         text: message, 
       })
       .then(() => {
-        console.log("Toast fired successfully"); // debugging
+        setSuccessMessage("Toast fired!");
+        setErrorMessageText(""); // clear any previous error
       })
       .catch((error) => setErrorMessage(dispatch, error))
       .finally(() => {
@@ -82,7 +87,17 @@ const Home = () => {
   // function to schedule toast
   const handleScheduleSend = async () => {
     if (!title || !message || !scheduledDateTime) {
-      alert("Please enter a title, message, and scheduled date before scheduling.");  // error checking
+      setErrorMessageText("Please enter a title, message, and scheduled date before scheduling.");
+      setSuccessMessage("");
+      setAreButtonsDisabled(false);
+      return;
+    }    
+    const selectedTime = new Date(scheduledDateTime);
+    const now = new Date();
+
+    if (selectedTime <= now) {
+      setErrorMessageText("Please select a future date and time.");
+      setSuccessMessage("");
       setAreButtonsDisabled(false);
       return;
     }
@@ -94,7 +109,7 @@ const Home = () => {
         date_scheduled: scheduledDateTime,
       })
       .then(() =>{
-        console.log("Notification scheduled!");  // debugging
+        setErrorMessageText(""); // clear any previous error
         setSuccessMessage("Notification Scheduled! "); // Set success message
       })
       .catch((error) => setErrorMessage(dispatch, error))
@@ -181,6 +196,14 @@ const Home = () => {
           <div className="mt-6 flex justify-center">
             <p className="font-semibold rounded-md px-4 py-2 text-center w-fit">
               {successMessage}
+            </p>
+          </div>
+        )}
+        {/* Error Message */}
+        {errorMessage && (
+          <div className="mt-4 flex justify-center">
+            <p className="text-red-600 font-semibold rounded-md px-4 py-2 text-center w-fit">
+              {errorMessage}
             </p>
           </div>
         )}
