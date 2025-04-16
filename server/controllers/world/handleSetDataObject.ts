@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import cron from "node-cron"; 
 import { World, errorHandler, getCredentials } from "../../utils/index.js";
 import crypto from "crypto"; // Import for UUID generation
+import { DateTime } from 'luxon';
 
 const scheduledJobs: Record<string, any> = {};
   
@@ -13,8 +14,10 @@ export const handleSetDataObject = async (req: Request, res: Response) => {
         const { profileId } = credentials;
         const { title, message, date_scheduled } = req.body;
         // This currently gives the date in UTC time
-        const currentDate = new Date();
-        const formattedDate = currentDate.toLocaleString("sv-SE", { hour12: false }).replace(" ", "T").slice(0, 16);
+        //const currentDate = new Date();
+        // changing to est time
+        //const formattedDate = currentDate.toLocaleString("sv-SE", { hour12: false }).replace(" ", "T").slice(0, 16);
+        const formattedDate = DateTime.now().setZone('America/Los_Angeles').toFormat("yyyy-MM-dd'T'HH:mm");
 
         const world = World.create(credentials.urlSlug, { credentials });
 
@@ -25,14 +28,17 @@ export const handleSetDataObject = async (req: Request, res: Response) => {
         }
 
         // parsing schedule date so I can add it to cron (uses local time)
-        const scheduleDate = new Date(date_scheduled);
-        const min = scheduleDate.getUTCMinutes();
-        const hour = scheduleDate.getUTCHours();
-        const day = scheduleDate.getUTCDate();
-        const month = scheduleDate.getUTCMonth() + 1;
+        //const scheduleDate = new Date(date_scheduled);
+        const scheduleDate = DateTime.fromISO(date_scheduled, { zone: 'America/Los_Angeles' });
+        const formattedScheduledDate = scheduleDate.toFormat("yyyy-MM-dd'T'HH:mm");
+        const min = scheduleDate.minute;
+        const hour = scheduleDate.hour;
+        const day = scheduleDate.day;
+        const month = scheduleDate.month;
         const cronTime = `${min} ${hour} ${day} ${month} *`;
         console.log(cronTime);
-        
+        console.log(formattedScheduledDate);
+        console.log(formattedDate);
 
         let jobId = crypto.randomUUID(); // used to generate unique id
         while (scheduledJobs[jobId]) {
@@ -72,6 +78,7 @@ export const handleSetDataObject = async (req: Request, res: Response) => {
         }, {
             scheduled: true,
             name: jobId,
+            timezone: 'America/Los_Angeles',
         });
 
         // adding toast to the world data object
@@ -80,7 +87,7 @@ export const handleSetDataObject = async (req: Request, res: Response) => {
             [`messages.${profileId}.${jobId}`]: {   // key is profile id + jobid
                 title,
                 message,
-                date_scheduled,
+                date_scheduled: formattedScheduledDate,
                 date_created: formattedDate,        // dates are in different time zones, need to fix
                 job_id: jobId,
             }, 

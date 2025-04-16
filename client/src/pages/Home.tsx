@@ -4,7 +4,8 @@ import { useNavigate } from "react-router-dom";
 // components
 import { PageContainer } from "@/components";
 
-
+// date
+import { DateTime } from "luxon";
 
 // context
 import { GlobalDispatchContext, GlobalStateContext } from "@/context/GlobalContext";
@@ -92,8 +93,12 @@ const Home = () => {
       setAreButtonsDisabled(false);
       return;
     }    
-    const selectedTime = new Date(scheduledDateTime);
-    const now = new Date();
+    //const selectedTime = new Date(scheduledDateTime);
+    const selectedTime = DateTime.fromISO(scheduledDateTime);
+    const pacificTime = selectedTime.setZone("America/Los_Angeles");
+    //const now = new Date();
+    const now = DateTime.now();
+
 
     if (selectedTime <= now) {
       setErrorMessageText("Please select a future date and time.");
@@ -101,12 +106,13 @@ const Home = () => {
       setAreButtonsDisabled(false);
       return;
     }
+
     setSuccessMessage(""); // Clear previous success message
     backendAPI
       .post("/world/handle-schedule-toast",{  // scheduling toast
         title: title,
         message: message,
-        date_scheduled: scheduledDateTime,
+        date_scheduled: pacificTime,
       })
       .then(() =>{
         setErrorMessageText(""); // clear any previous error
