@@ -44,6 +44,7 @@ Structure of the world data object:
                 date_scheduled,
                 date_created,
                 job_id,
+                displayName,
             }`
 
 #### Client

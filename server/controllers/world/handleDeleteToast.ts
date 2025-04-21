@@ -1,14 +1,23 @@
 import { Request, Response } from "express";
 import { World, errorHandler, getCredentials } from "../../utils/index.js";
 
+
+/**
+ * This controller is used to delete a toast from the world data object
+ * Accepts {jobId}
+ */
 export const handleDeleteToast = async (req: Request, res: Response) => {
   try {
-    const credentials = getCredentials(req.query);
-    const { profileId } = credentials; // Extract profileId
-    const world = World.create(credentials.urlSlug, { credentials });
 
+    t//hrow "this functionality is not yet available";
+
+    
+    const credentials = getCredentials(req.query);
+    const { profileId } = credentials; 
+    const world = World.create(credentials.urlSlug, { credentials });
     const { jobId } = req.body;
 
+    // error checking
     if (!jobId) {
       return res.status(400).json({ error: "Job ID is required." });
     }
@@ -29,11 +38,13 @@ export const handleDeleteToast = async (req: Request, res: Response) => {
       delete response.messages[profileId];
     }
 
-    // Save updated data
+    // update the world data object to the local copy
     await world.updateDataObject({ messages: response.messages });
     console.log("Message deleted");
 
     return res.json({ success: true, message: "Scheduled message deleted successfully." });
+
+    
   } catch (error) {
     return errorHandler({
       error,
