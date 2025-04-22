@@ -3,7 +3,6 @@ import { Route, Routes, useNavigate, useSearchParams } from "react-router-dom";
 
 // pages
 import Home from "@pages/Home";
-import Error from "@pages/Error";
 
 // context
 import { GlobalDispatchContext } from "./context/GlobalContext";
@@ -82,7 +81,6 @@ const App = () => {
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/scheduled-messages" element={<ScheduledMessages />} />
-      <Route path="*" element={<Error />} />
     </Routes>
   );
 };

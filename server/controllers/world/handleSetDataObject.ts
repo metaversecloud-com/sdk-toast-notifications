@@ -49,7 +49,6 @@ export const handleSetDataObject = async (req: Request, res: Response) => {
 
             // Check if the job exists in the world object, if it was deleted by user then it could not exist
             if (!response?.messages?.[profileId]?.[jobId]) {
-                console.log(`Scheduled job ${jobId} was removed before execution.`);
                 delete scheduledJobs[jobId]; // Remove from scheduled jobs and exit
                 return; 
             }

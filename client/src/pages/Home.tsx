@@ -127,27 +127,27 @@ const Home = () => {
 
     // Checks if title/message/scheduledTime is missing or if they are over character limit
     if(!title){
-      setTitleError("Please enter a title before sending immediately.");
+      setTitleError("Please enter a title before scheduling.");
       error = true;
     }else if(title.length > TITLE_CHAR_LIMIT){
       setTitleError(`Title must be ${TITLE_CHAR_LIMIT} characters or less`);
       error = true;
     }
     if(!message){
-      setMessageError("Please enter a message before sending immediately.");
+      setMessageError("Please enter a message before scheduling.");
       error = true;
     }else if(message.length > MESSAGE_CHAR_LIMIT){
       setMessageError(`Title must be ${MESSAGE_CHAR_LIMIT} characters or less`);
       error = true;
     }
-    if(!selectedTime){
+    if(!selectedTime.isValid){
       setScheduleError("Please enter a date before scheduling.");
       error = true
     }else if(selectedTime <= minValidTime) {  
       setScheduleError("Please select a future date and time that is at least 5 minutes ahead.");
       error = true
     }
-    
+
     // returns if there is an error
     if(error){
       setSuccessMessage("");
