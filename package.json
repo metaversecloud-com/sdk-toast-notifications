@@ -12,9 +12,11 @@
     "dev-client": "npm run dev --prefix client"
   },
   "dependencies": {
-    "@rtsdk/topia": "^0.15.1",
+    "@rtsdk/topia": "^0.15.4",
     "axios": "^1.6.8",
-    "concurrently": "^8.2.2"
+    "concurrently": "^8.2.2",
+    "luxon": "^3.6.1",
+    "node-cron": "^3.0.3"
   },
   "license": "BSD-3-Clause",
   "devDependencies": {

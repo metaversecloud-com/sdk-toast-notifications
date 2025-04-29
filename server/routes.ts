@@ -1,11 +1,6 @@
 import express from "express";
 import {
-  handleDropAsset,
-  handleGetDroppedAsset,
   handleGetVisitor,
-  handleRemoveDroppedAssetsByUniqueName,
-  handleGetWorldDetails,
-  handleUpdateWorldDataObject,
   handleFireToast,
   handleSetDataObject,
   handleFetchDataObject,
@@ -34,31 +29,16 @@ router.get("/system/health", (req, res) => {
   });
 });
 
-// Dropped Assets
-router.post("/dropped-asset", handleDropAsset);
-router.get("/dropped-asset", handleGetDroppedAsset);
-router.post("/remove-dropped-assets", handleRemoveDroppedAssetsByUniqueName);
-
 // Visitor
 router.get("/visitor", handleGetVisitor);
 
+//World
+router.post("/world/fire-toast", handleFireToast); // new route to fire toast immediately
 
-// World
-router.get("/world", handleGetWorldDetails);
-router.put("/world/data-object", handleUpdateWorldDataObject);
+router.post("/world/handle-schedule-toast", handleSetDataObject); // new route to update world object and schedule toasts
 
+router.post("/world/handle-delete-toast", handleDeleteToast); // new route to update world object by deleting a toast
 
-// new route to fire toast immediately
-router.post("/world/fire-toast", handleFireToast);
-
-// new route to update world object and schedule toasts
-router.post("/world/handle-schedule-toast", handleSetDataObject); 
-
-// new route to update world object by deleting a toast
-router.post("/world/handle-delete-toast", handleDeleteToast);
-
-// new route to fetch world data object
-router.get("/world/handle-get-toasts", handleFetchDataObject) 
-
+router.get("/world/handle-get-toasts", handleFetchDataObject); // new route to fetch world data object
 
 export default router;
