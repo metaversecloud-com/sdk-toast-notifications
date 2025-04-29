@@ -76,13 +76,18 @@ const Home = () => {
     }else if(title.length > TITLE_CHAR_LIMIT){
       setTitleError(`Title must be ${TITLE_CHAR_LIMIT} characters or less`);
       error = true;
+    }else{
+      setTitleError("");
     }
+
     if(!message){
       setMessageError("Please enter a message before sending immediately.");
       error = true;
     }else if(message.length > MESSAGE_CHAR_LIMIT){
       setMessageError(`Title must be ${MESSAGE_CHAR_LIMIT} characters or less`);
       error = true;
+    }else{
+      setMessageError("");
     }
 
     // returns if there is an error
@@ -132,20 +137,28 @@ const Home = () => {
     }else if(title.length > TITLE_CHAR_LIMIT){
       setTitleError(`Title must be ${TITLE_CHAR_LIMIT} characters or less`);
       error = true;
+    }else{
+      setTitleError("");
     }
+
     if(!message){
       setMessageError("Please enter a message before scheduling.");
       error = true;
     }else if(message.length > MESSAGE_CHAR_LIMIT){
       setMessageError(`Title must be ${MESSAGE_CHAR_LIMIT} characters or less`);
       error = true;
+    }else{
+      setMessageError("");
     }
+
     if(!selectedTime.isValid){
       setScheduleError("Please enter a date before scheduling.");
       error = true
     }else if(selectedTime <= minValidTime) {  
       setScheduleError("Please select a future date and time that is at least 5 minutes ahead.");
       error = true
+    }else{
+      setScheduleError("");
     }
 
     // returns if there is an error
