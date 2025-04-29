@@ -29,18 +29,16 @@ router.get("/system/health", (req, res) => {
   });
 });
 
-
 // Visitor
 router.get("/visitor", handleGetVisitor);
 
 //World
-router.post("/world/fire-toast", handleFireToast);                  // new route to fire toast immediately
+router.post("/world/fire-toast", handleFireToast); // new route to fire toast immediately
 
-router.post("/world/handle-schedule-toast", handleSetDataObject);   // new route to update world object and schedule toasts
+router.post("/world/handle-schedule-toast", handleSetDataObject); // new route to update world object and schedule toasts
 
-router.post("/world/handle-delete-toast", handleDeleteToast);       // new route to update world object by deleting a toast
+router.post("/world/handle-delete-toast", handleDeleteToast); // new route to update world object by deleting a toast
 
-router.get("/world/handle-get-toasts", handleFetchDataObject)       // new route to fetch world data object
-
+router.get("/world/handle-get-toasts", handleFetchDataObject); // new route to fetch world data object
 
 export default router;

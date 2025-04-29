@@ -13,20 +13,17 @@ import { GlobalDispatchContext, GlobalStateContext } from "@/context/GlobalConte
 // utils
 import { backendAPI, setErrorMessage } from "@/utils";
 
-
-
-const Home = () => {
-
+export const Home = () => {
   const dispatch = useContext(GlobalDispatchContext);
-  const {hasSetupBackend } = useContext(GlobalStateContext);
+  const { hasSetupBackend } = useContext(GlobalStateContext);
   const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [areButtonsDisabled, setAreButtonsDisabled] = useState(false);
-  const [title, setTitle] = useState("");                         // stores title of toast
-  const [message, setMessage] = useState("");                     // stores message of toast
+  const [title, setTitle] = useState(""); // stores title of toast
+  const [message, setMessage] = useState(""); // stores message of toast
   const [scheduledDateTime, setScheduledDateTime] = useState(""); // stores date and time
-  const [successMessage, setSuccessMessage] = useState("");       // Success message state
-  const [isAdminLoading, setIsAdminLoading] = useState(true);     // track loading state for admin check
+  const [successMessage, setSuccessMessage] = useState(""); // Success message state
+  const [isAdminLoading, setIsAdminLoading] = useState(true); // track loading state for admin check
   // for error states
   const [titleError, setTitleError] = useState("");
   const [messageError, setMessageError] = useState("");
@@ -37,7 +34,6 @@ const Home = () => {
 
   const [showDateTimePicker, setShowDateTimePicker] = useState(false);
   const navigate = useNavigate();
-
 
   // Fetches visitor immediately to determine whether the user is an admin or not
   useEffect(() => {
@@ -54,65 +50,65 @@ const Home = () => {
         }
       } catch (error) {
         console.error("Visitor fetch error:", error);
-        setIsAdmin(null);         // Stays neutral on error
+        setIsAdmin(null); // Stays neutral on error
       } finally {
         setIsAdminLoading(false);
       }
     };
-  
+
     fetchVisitor();
   }, [hasSetupBackend, isAdmin]); // re-runs whenever hasSetupBackend changes to ensure that the admins can still see the correct view
-
 
   // Function to fire a toast immediately
   const handleFireToast = async () => {
     setAreButtonsDisabled(true);
     let error = false;
-    
+
     // Checks if title/message is missing or if they are over character limit
-    if(!title){
+    if (!title) {
       setTitleError("Please enter a title before sending immediately.");
       error = true;
-    }else if(title.length > TITLE_CHAR_LIMIT){
+    } else if (title.length > TITLE_CHAR_LIMIT) {
       setTitleError(`Title must be ${TITLE_CHAR_LIMIT} characters or less`);
       error = true;
-    }else{
+    } else {
       setTitleError("");
     }
 
-    if(!message){
+    if (!message) {
       setMessageError("Please enter a message before sending immediately.");
       error = true;
-    }else if(message.length > MESSAGE_CHAR_LIMIT){
+    } else if (message.length > MESSAGE_CHAR_LIMIT) {
       setMessageError(`Title must be ${MESSAGE_CHAR_LIMIT} characters or less`);
       error = true;
-    }else{
+    } else {
       setMessageError("");
     }
 
     // returns if there is an error
-    if(error){
+    if (error) {
       setSuccessMessage("");
       setScheduleError("");
       setAreButtonsDisabled(false);
       return;
     }
-    setSuccessMessage("");    
-    
+    setSuccessMessage("");
+
     // calls the fireToast function
     backendAPI
-      .post("/world/fire-toast", {  // firing toast immediately
-        title: title, 
-        text: message, 
+      .post("/world/fire-toast", {
+        // firing toast immediately
+        title: title,
+        text: message,
       })
       .then(() => {
         setSuccessMessage("Toast fired!");
         // clear any previous errors
         setMessageError("");
-        setTitleError("");  
+        setTitleError("");
         setTitle("");
         setMessage("");
-        setScheduledDateTime(""); 
+        setScheduledDateTime("");
       })
       .catch((error) => setErrorMessage(dispatch, error))
       .finally(() => {
@@ -120,49 +116,48 @@ const Home = () => {
       });
   };
 
-
   // function to schedule toast - Currently not in use while scheduling is not available
   const handleScheduleSend = async () => {
     // time variables to keep track of the entered time, pst transaltion, and minimum valid time
     const selectedTime = DateTime.fromISO(scheduledDateTime);
     const pacificTime = selectedTime.setZone("America/Los_Angeles");
     const now = DateTime.now();
-    const minValidTime = now.plus({ minutes: 4 });  // 4 minute buffer for scheduling times
+    const minValidTime = now.plus({ minutes: 4 }); // 4 minute buffer for scheduling times
     let error = false;
 
     // Checks if title/message/scheduledTime is missing or if they are over character limit
-    if(!title){
+    if (!title) {
       setTitleError("Please enter a title before scheduling.");
       error = true;
-    }else if(title.length > TITLE_CHAR_LIMIT){
+    } else if (title.length > TITLE_CHAR_LIMIT) {
       setTitleError(`Title must be ${TITLE_CHAR_LIMIT} characters or less`);
       error = true;
-    }else{
+    } else {
       setTitleError("");
     }
 
-    if(!message){
+    if (!message) {
       setMessageError("Please enter a message before scheduling.");
       error = true;
-    }else if(message.length > MESSAGE_CHAR_LIMIT){
+    } else if (message.length > MESSAGE_CHAR_LIMIT) {
       setMessageError(`Title must be ${MESSAGE_CHAR_LIMIT} characters or less`);
       error = true;
-    }else{
+    } else {
       setMessageError("");
     }
 
-    if(!selectedTime.isValid){
+    if (!selectedTime.isValid) {
       setScheduleError("Please enter a date before scheduling.");
-      error = true
-    }else if(selectedTime <= minValidTime) {  
+      error = true;
+    } else if (selectedTime <= minValidTime) {
       setScheduleError("Please select a future date and time that is at least 5 minutes ahead.");
-      error = true
-    }else{
+      error = true;
+    } else {
       setScheduleError("");
     }
 
     // returns if there is an error
-    if(error){
+    if (error) {
       setSuccessMessage("");
       setAreButtonsDisabled(false);
       return;
@@ -170,12 +165,13 @@ const Home = () => {
 
     setSuccessMessage(""); // Clear previous success message
     backendAPI
-      .post("/world/handle-schedule-toast",{  // scheduling toast
+      .post("/world/handle-schedule-toast", {
+        // scheduling toast
         title: title,
         message: message,
         date_scheduled: pacificTime,
       })
-      .then(() =>{
+      .then(() => {
         setMessageError("");
         setTitleError("");
         setScheduleError(""); // clear any previous error
@@ -188,59 +184,65 @@ const Home = () => {
       .catch((error) => setErrorMessage(dispatch, error))
       .finally(() => {
         setAreButtonsDisabled(false);
-      })
+      });
   };
-
-  
 
   // Loading animation while backend is not setup
   if (isAdminLoading || !hasSetupBackend) {
-    return <PageContainer isLoading={true}><div>Loading...</div></PageContainer>;
+    return (
+      <PageContainer isLoading={true}>
+        <div>Loading...</div>
+      </PageContainer>
+    );
   }
-  
+
   // non-admin view shows no functionality
   if (!isAdmin) {
-    return <div className="text-center text-gray-500 mt-12">
-      <p className="text-lg font-medium mb-2">Nothing to see here!</p>
-    </div>
+    return (
+      <div className="text-center text-gray-500 mt-12">
+        <p className="text-lg font-medium mb-2">Nothing to see here!</p>
+      </div>
+    );
   }
-  
+
   return (
     <PageContainer isLoading={isLoading}>
       <div className="px-6 md:px-12">
         <h1 className="text-2xl font-bold mb-6">Send a Notification to Users</h1>
-  
+
         {/* Title textfield */}
         <div className="mb-6">
-          <label htmlFor="titleInput" className="block text-lg font-medium mb-1">Notification Title</label>
+          <label htmlFor="titleInput" className="block text-lg font-medium mb-1">
+            Notification Title
+          </label>
           <input
             id="titleInput"
             type="text"
             value={title}
             //maxLength={TITLE_CHAR_LIMIT}
             onChange={(e) => setTitle(e.target.value)}
-            className={`border p-2 rounded-md w-full ${titleError ? 'border-red-500' : 'border-gray-300'}`}
+            className={`border p-2 rounded-md w-full ${titleError ? "border-red-500" : "border-gray-300"}`}
             placeholder="Ex. Class is Ending"
           />
           {titleError && <div className="text-red-500 text-sm mt-1">{titleError}</div>}
           <div
-            className={`text-sm text-right mt-1 ${
-              title.length > TITLE_CHAR_LIMIT ? "text-red-500" : "text-black-600"
-            }`}
+            className={`text-sm text-right mt-1 ${title.length > TITLE_CHAR_LIMIT ? "text-red-500" : "text-black-600"}`}
           >
             {title.length}/{TITLE_CHAR_LIMIT}
           </div>
         </div>
-  
+
         {/* Message textfield */}
         <div className="mb-6">
-          <label htmlFor="messageInput" className="block text-lg font-medium mb-1">Notification Message</label>
+          <label htmlFor="messageInput" className="block text-lg font-medium mb-1">
+            Notification Message
+          </label>
           <textarea
             id="messageInput"
             value={message}
             //maxLength={MESSAGE_CHAR_LIMIT}
             onChange={(e) => setMessage(e.target.value)}
-            className={`border p-2 rounded-md w-full ${messageError ? 'border-red-500' : 'border-gray-300'}`}
+            className={`border p-2 rounded-md w-full ${messageError ? "border-red-500" : "border-gray-300"}`}
             placeholder="Ex. Please be ready to leave in 5 minutes!"
           />
           {messageError && <div className="text-red-500 text-sm mt-1">{messageError}</div>}
@@ -252,64 +254,79 @@ const Home = () => {
             {message.length}/{MESSAGE_CHAR_LIMIT}
           </div>
         </div>
-  
 
         <div className="flex flex-col md:flex-row gap-4 mb-6">
-          <button
-            className="btn"
-            disabled={areButtonsDisabled}
-            onClick={handleFireToast}
-          >
+          <button className="btn" disabled={areButtonsDisabled} onClick={handleFireToast}>
             Send Now
           </button>
           {/* Hiding the Schedule Send button, remove false to put it back in the UI */}
-          {false && <button
-            className="btn"
-            disabled={areButtonsDisabled}
-            onClick={() => setShowDateTimePicker(true)}
-          >
-            Schedule Send
-          </button>}
+          {false && (
+            <button className="btn" disabled={areButtonsDisabled} onClick={() => setShowDateTimePicker(true)}>
+              Schedule Send
+            </button>
+          )}
           {/* Hiding the View Scheduled Messages button, remove false to put it back in the UI */}
-          {false && 
-          <button
-            className="text-[#001F3F] border border-[#001F3F] hover:bg-[#001F3F]/10 font-semibold py-2 px-6 rounded-lg transition-colors duration-200"
-            onClick={() => navigate("/scheduled-messages")}
-          >
-            View Scheduled Messages
-          </button>}
+          {false && (
+            <button
+              className="text-[#001F3F] border border-[#001F3F] hover:bg-[#001F3F]/10 font-semibold py-2 px-6 rounded-lg transition-colors duration-200"
+              onClick={() => navigate("/scheduled-messages")}
+            >
+              View Scheduled Messages
+            </button>
+          )}
         </div>
-  
+
         {/* Opens scheduling functionality when the user clicks the Schedule Send Button - Hiden for now */}
         {showDateTimePicker && (
           <div className="mb-6">
-            <label htmlFor="scheduleInput" className="block text-lg font-medium mb-1">Schedule a Date & Time</label>
+            <label htmlFor="scheduleInput" className="block text-lg font-medium mb-1">
+              Schedule a Date & Time
+            </label>
             <input
               id="scheduleInput"
               type="datetime-local"
               value={scheduledDateTime}
               onChange={(e) => setScheduledDateTime(e.target.value)}
-              className={`border p-2 rounded-md w-full ${scheduleError ? 'border-red-500' : 'border-gray-300'}`}
+              className={`border p-2 rounded-md w-full ${scheduleError ? "border-red-500" : "border-gray-300"}`}
             />
             {scheduleError && <div className="text-red-500 text-sm mt-1">{scheduleError}</div>}
             {scheduledDateTime && (
-              <p className="text-sm mt-2">Scheduled for: <strong>{new Date(scheduledDateTime).toLocaleString()}</strong></p>
+              <p className="text-sm mt-2">
+                Scheduled for: <strong>{new Date(scheduledDateTime).toLocaleString()}</strong>
+              </p>
             )}
             <div className="mt-3">
-              <button
-                className="btn"
-                onClick={handleScheduleSend}
-              >
+              <button className="btn" onClick={handleScheduleSend}>
                 Confirm Schedule
               </button>
             </div>
           </div>
         )}
-  
 
-        {successMessage && (
-          <div className="mt-6 font-semibold text-center">{successMessage}</div>
+        {/* show the scheduled date & time */}
+        {scheduledDateTime && (
+          <p className="mt-2">
+            <strong>Scheduled for:</strong> {new Date(scheduledDateTime).toLocaleString()}
+          </p>
         )}
+        <div className="flex gap-4 p-4">
+          <button className="btn" disabled={areButtonsDisabled} onClick={handleScheduleSend}>
+            Schedule Send
+          </button>
+        </div>
+        <div>
+          <button className="btn" onClick={() => navigate("/scheduled-messages")}>
+            View Scheduled Messages
+          </button>
+        </div>
+        {/* Success Message */}
+        {successMessage && (
+          <div className="mt-6 flex justify-center">
+            <p className="font-semibold rounded-md px-4 py-2 text-center w-fit">{successMessage}</p>
+          </div>
+        )}
+
+        {successMessage && <div className="mt-6 font-semibold text-center">{successMessage}</div>}
       </div>
     </PageContainer>
   );

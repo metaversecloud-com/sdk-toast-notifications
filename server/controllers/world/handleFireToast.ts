@@ -8,7 +8,7 @@ export const handleFireToast = async (req: Request, res: Response) => {
     const credentials = getCredentials(req.query);
     const world = World.create(credentials.urlSlug, { credentials });
 
-    // allows custom message/titles 
+    // allows custom message/titles
     await world.fireToast({
       title: req.body.title,
       text: req.body.text,

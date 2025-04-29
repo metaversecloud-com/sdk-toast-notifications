@@ -3,11 +3,10 @@ import { useNavigate } from "react-router-dom";
 import { backendAPI } from "@/utils";
 import { DateTime } from "luxon";
 
-
-const ScheduledMessages = () => {
+export const ScheduledMessages = () => {
   // imitates the structure of world data object in handleSetDataObjects
   const [messages, setMessages] = useState<{
-    [key: string]: { title: string; message: string; date_scheduled: string; displayName: string};
+    [key: string]: { title: string; message: string; date_scheduled: string; displayName: string };
   }>({});
 
   const navigate = useNavigate();
@@ -18,24 +17,29 @@ const ScheduledMessages = () => {
       try {
         const response = await backendAPI.get("/world/handle-get-toasts");
         console.log("Response:", response.data.savedData.messages); // Debugging log
-  
+
         // explicitly type messagesData
-        const messagesData: Record<string, Record<string, { title: string; message: string; date_scheduled: string; displayName: string }>> =
-          response.data.savedData.messages;
-  
+        const messagesData: Record<
+          string,
+          Record<string, { title: string; message: string; date_scheduled: string; displayName: string }>
+        > = response.data.savedData.messages;
+
         if (messagesData && typeof messagesData === "object") {
           // merge all messages from different profile IDs into a single object
-          const allMessages = Object.values(messagesData).reduce((acc, profileMessages) => {
-            return { ...acc, ...profileMessages };
-          }, {} as Record<string, { title: string; message: string; date_scheduled: string; displayName: string}>);
-  
+          const allMessages = Object.values(messagesData).reduce(
+            (acc, profileMessages) => {
+              return { ...acc, ...profileMessages };
+            },
+            {} as Record<string, { title: string; message: string; date_scheduled: string; displayName: string }>,
+          );
+
           setMessages(allMessages);
         }
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     };
-  
+
     fetchData();
   }, []);
 
@@ -58,16 +62,15 @@ const ScheduledMessages = () => {
       console.error("Error deleting message:", error);
     }
   };
-  
 
   // formats date to be more readable in the cards
   const formatDate = (dateString: string) => {
     const pacificTime = DateTime.fromISO(dateString, { zone: "America/Los_Angeles" });
     const localTime = pacificTime.setZone(Intl.DateTimeFormat().resolvedOptions().timeZone);
-  
+
     const dateFormatted = localTime.toLocaleString(DateTime.DATE_MED); // e.g., Apr 15, 2025
     const timeFormatted = localTime.toLocaleString(DateTime.TIME_SIMPLE); // e.g., 4:15 PM
-  
+
     return {
       date: dateFormatted,
       time: timeFormatted,
@@ -78,7 +81,6 @@ const ScheduledMessages = () => {
 
   return (
     <div className="relative p-6 pt-16 pb-24">
-
       <h1 className="text-2xl font-bold mb-4">Scheduled Messages</h1>
 
       {hasMessages ? (
@@ -97,7 +99,9 @@ const ScheduledMessages = () => {
                 <h3 className="text-lg font-semibold">{message.title}</h3>
                 <p className="text-gray-700">{message.message}</p>
                 <p className="text-sm text-gray-500 mt-2">By: {message.displayName}</p>
-                <p className="text-sm text-gray-500 mt-2">Scheduled: {date} at {time}</p>
+                <p className="text-sm text-gray-500 mt-2">
+                  Scheduled: {date} at {time}
+                </p>
               </div>
             );
           })}
@@ -123,20 +127,11 @@ const ScheduledMessages = () => {
           stroke="currentColor"
           className="h-6 w-6"
         >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M10 19l-7-7m0 0l7-7m-7 7h18"
-          />
+          <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
         </svg>
       </button>
-
-
-
-
     </div>
   );
 };
 
 export default ScheduledMessages;
-
