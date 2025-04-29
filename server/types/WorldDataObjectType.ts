@@ -1,5 +1,5 @@
 export type WorldDataObjectType = {
-  [sceneDropId: string]: {
-    keyAssetId: string;
+  messages?: {
+    [profileId: string]: { title: string; message: string; date_scheduled: string; displayName: string };
   };
 };
