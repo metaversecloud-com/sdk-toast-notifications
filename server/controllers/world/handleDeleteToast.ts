@@ -11,8 +11,8 @@ export const handleDeleteToast = async (req: Request, res: Response) => {
 
     throw "this functionality is not yet available";
 
-    /*
-    const credentials = getCredentials(req.query);
+    
+    /*const credentials = getCredentials(req.query);
     const { profileId } = credentials; 
     const world = World.create(credentials.urlSlug, { credentials });
     const { jobId } = req.body;

@@ -93,8 +93,8 @@ export const handleSetDataObject = async (req: Request, res: Response) => {
         );
 
 
-        return res.json({success: true });
-        */
+        return res.json({success: true });*/
+        
         
     } catch (error) {
             return errorHandler({
