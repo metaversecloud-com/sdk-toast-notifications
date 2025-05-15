@@ -9,10 +9,18 @@ export const handleFireToast = async (req: Request, res: Response) => {
     const world = World.create(credentials.urlSlug, { credentials });
 
     // allows custom message/titles
-    await world.fireToast({
-      title: req.body.title,
-      text: req.body.text,
-    });
+    await world
+      .fireToast({
+        title: req.body.title,
+        text: req.body.text,
+      })
+      .catch((error) =>
+        errorHandler({
+          error,
+          functionName: "handleFireToast",
+          message: "Error firing toast",
+        }),
+      );
 
     return res.json({ success: true });
   } catch (error) {

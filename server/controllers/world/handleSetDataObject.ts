@@ -52,10 +52,18 @@ export const handleSetDataObject = async (req: Request, res: Response) => {
         }
 
         // firing toast at scheduled time
-        await world.fireToast({
-          title,
-          text: message,
-        });
+        await world
+          .fireToast({
+            title,
+            text: message,
+          })
+          .catch((error) =>
+            errorHandler({
+              error,
+              functionName: "handleSetDataObject",
+              message: "Error firing toast",
+            }),
+          );
 
         // Remove the message from the world data object after the cron job executes
         delete response.messages[profileId][jobId];
