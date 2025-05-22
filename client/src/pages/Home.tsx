@@ -16,13 +16,13 @@ import { backendAPI, setErrorMessage } from "@/utils";
 export const Home = () => {
   const dispatch = useContext(GlobalDispatchContext);
   const { hasSetupBackend } = useContext(GlobalStateContext);
-  const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [areButtonsDisabled, setAreButtonsDisabled] = useState(false);
-  const [title, setTitle] = useState(""); // stores title of toast
-  const [message, setMessage] = useState(""); // stores message of toast
-  // const [scheduledDateTime, setScheduledDateTime] = useState(""); // stores date and time
-  const [successMessage, setSuccessMessage] = useState(""); // Success message state
+  const [title, setTitle] = useState("");
+  const [message, setMessage] = useState("");
+  // const [scheduledDateTime, setScheduledDateTime] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
 
   // for error states
   const [titleError, setTitleError] = useState("");
@@ -36,29 +36,35 @@ export const Home = () => {
   // const [showDateTimePicker, setShowDateTimePicker] = useState(true);
   // const navigate = useNavigate();
 
-  // Fetches visitor immediately to determine whether the user is an admin or not
   useEffect(() => {
-    if (!hasSetupBackend || isAdmin != null) return; // Does not fetch until backend is setup
+    if (!hasSetupBackend) return;
 
-    // Fetches isAdmin attribute
     const fetchVisitor = async () => {
-      try {
-        const response = await backendAPI.get("/visitor");
-        if (response.data.success) {
+      backendAPI
+        .get("/visitor")
+        .then((response) => {
           setIsAdmin(response.data.visitor.isAdmin);
-        } else {
-          setIsAdmin(false);
-        }
-      } catch (error) {
-        console.error("Visitor fetch error:", error);
-        setIsAdmin(null); // Stays neutral on error
-      } finally {
-        setIsLoading(false);
-      }
+        })
+        .catch((error) => {
+          console.error("Visitor fetch error:", error);
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
     };
 
     fetchVisitor();
-  }, [hasSetupBackend, isAdmin]); // re-runs whenever hasSetupBackend changes to ensure that the admins can still see the correct view
+  }, [hasSetupBackend, isAdmin]);
+
+  const handleSetTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setTitle(e.target.value);
+    setTitleError("");
+  };
+
+  const handleSetMessage = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setMessage(e.target.value);
+    setMessageError("");
+  };
 
   // Function to fire a toast immediately
   const handleFireToast = async () => {
@@ -103,7 +109,7 @@ export const Home = () => {
         text: message,
       })
       .then(() => {
-        setSuccessMessage("Toast fired!");
+        setSuccessMessage("🎉 Your message was sent!");
         // clear any previous errors
         setMessageError("");
         setTitleError("");
@@ -191,65 +197,53 @@ export const Home = () => {
 
   return (
     <PageContainer isLoading={isLoading}>
-      <>
+      <div className="grid gap-4">
         {!isAdmin ? (
-          <div className="text-center text-gray-500 mt-12">
-            <p className="text-lg font-medium mb-2">Nothing to see here!</p>
-          </div>
+          <h3>Nothing to see here!</h3>
         ) : (
           <>
-            <h1 className="text-2xl font-bold mb-6">Send a Notification to Users</h1>
+            <h3>Send a Notification to Users</h3>
 
-            {/* Title textfield */}
-            <div className="mb-6">
-              <label htmlFor="titleInput" className="block text-lg font-medium mb-1">
+            <div className="input-group">
+              <label htmlFor="titleInput" className="label">
                 Notification Title
               </label>
               <input
                 id="titleInput"
+                className="input"
                 type="text"
                 value={title}
-                //maxLength={TITLE_CHAR_LIMIT}
-                onChange={(e) => setTitle(e.target.value)}
-                className={`border p-2 rounded-md w-full ${titleError ? "border-red-500" : "border-gray-300"}`}
                 placeholder="Ex. Class is Ending"
+                maxLength={TITLE_CHAR_LIMIT}
+                onChange={(event) => handleSetTitle(event)}
               />
-              {titleError && <div className="text-red-500 text-sm mt-1">{titleError}</div>}
-              <div
-                className={`text-sm text-right mt-1 ${title.length > TITLE_CHAR_LIMIT ? "text-red-500" : "text-black-600"}`}
-              >
+              <span className="input-char-count">
                 {title.length}/{TITLE_CHAR_LIMIT}
-              </div>
+              </span>
+              {titleError && <div className="p3 text-error">{titleError}</div>}
             </div>
 
-            {/* Message textfield */}
-            <div className="mb-6">
-              <label htmlFor="messageInput" className="block text-lg font-medium mb-1">
+            <div className="input-group">
+              <label htmlFor="messageInput" className="label">
                 Notification Message
               </label>
               <textarea
                 id="messageInput"
                 value={message}
-                //maxLength={MESSAGE_CHAR_LIMIT}
-                onChange={(e) => setMessage(e.target.value)}
-                className={`border p-2 rounded-md w-full ${messageError ? "border-red-500" : "border-gray-300"}`}
+                maxLength={MESSAGE_CHAR_LIMIT}
+                onChange={(event) => handleSetMessage(event)}
+                className="input"
                 placeholder="Ex. Please be ready to leave in 5 minutes!"
               />
-              {messageError && <div className="text-red-500 text-sm mt-1">{messageError}</div>}
-              <div
-                className={`text-sm text-right mt-1 ${
-                  message.length > MESSAGE_CHAR_LIMIT ? "text-red-500" : "text-black-600"
-                }`}
-              >
+              <span className="input-char-count">
                 {message.length}/{MESSAGE_CHAR_LIMIT}
-              </div>
+              </span>
+              {messageError && <div className="p3 text-error">{messageError}</div>}
             </div>
 
-            <div className="flex flex-col md:flex-row gap-4 mb-6">
-              <button className="btn" disabled={areButtonsDisabled} onClick={handleFireToast}>
-                Send Now
-              </button>
-            </div>
+            <button className="btn" disabled={areButtonsDisabled} onClick={handleFireToast}>
+              Send Now
+            </button>
 
             {/* Opens scheduling functionality when the user clicks the Schedule Send Button - Hidden for now */}
             {/* 
@@ -282,14 +276,10 @@ export const Home = () => {
             */}
 
             {/* Success Message */}
-            {successMessage && (
-              <div className="mt-6 flex justify-center">
-                <p className="font-semibold rounded-md px-4 py-2 text-center w-fit">{successMessage}</p>
-              </div>
-            )}
+            {successMessage && <p className="p-4 text-center text-success">{successMessage}</p>}
           </>
         )}
-      </>
+      </div>
     </PageContainer>
   );
 };
