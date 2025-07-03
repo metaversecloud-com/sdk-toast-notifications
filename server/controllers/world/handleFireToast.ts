@@ -6,6 +6,8 @@ import { World, errorHandler, getCredentials } from "../../utils/index.js";
 export const handleFireToast = async (req: Request, res: Response) => {
   try {
     const credentials = getCredentials(req.query);
+    const { profileId } = credentials;
+
     const world = World.create(credentials.urlSlug, { credentials });
 
     // allows custom message/titles
@@ -21,6 +23,13 @@ export const handleFireToast = async (req: Request, res: Response) => {
           message: "Error firing toast",
         }),
       );
+
+    world.updateDataObject(
+      {},
+      {
+        analytics: [{ analyticName: "notifications_sent", uniqueKey: profileId }],
+      },
+    );
 
     return res.json({ success: true });
   } catch (error) {
