@@ -1,10 +1,22 @@
-# README Template
-
-Please update the following in each of your SDK application.
+# Toast Notifications
 
 ## Introduction / Summary
 
-This boilerplate is meant to give you a simple starting point to build new features in Topia using our Javascript SDK. Please reference the [documentation](https://metaversecloud-com.github.io/mc-sdk-js/index.html) for a more detailed breakdown of what the SDK is capable of and how to use it! This SDk application allows admins of a world to send announcements (Toasts) at a given time. They can also delete scheduled messages if they chose to.
+Toast Notifications allows admins of a world to send announcements (Toasts) at a given time. Admins can send immediate toasts or schedule them for future delivery. They can also view and delete scheduled messages.
+
+## Built With
+
+### Client
+
+![React](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)
+![Vite](https://img.shields.io/badge/vite-%23646CFF.svg?style=for-the-badge&logo=vite&logoColor=white)
+![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/tailwindcss-%2338B2AC.svg?style=for-the-badge&logo=tailwind-css&logoColor=white)
+
+### Server
+
+![Node.js](https://img.shields.io/badge/node.js-%2343853D.svg?style=for-the-badge&logo=node.js&logoColor=white)
+![Express](https://img.shields.io/badge/express-%23000000.svg?style=for-the-badge&logo=express&logoColor=white)
 
 ## Key Features
 
@@ -36,7 +48,7 @@ This boilerplate is meant to give you a simple starting point to build new featu
 _We use data objects to store information about each implementation of the app per world._
 
 - World: the data object attached to the world will store toast information for every instance of the app in a given world by visitorID followed by a unique job_id for each scheduled message.
-Structure of the world data object:
+  Structure of the world data object:
 
 `[messages.${profileId}.${jobId}]: {
                 title,
@@ -47,17 +59,19 @@ Structure of the world data object:
                 displayName,
             }`
 
-#### Client
+## Environment Variables
 
-![React](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)
-![Vite](https://img.shields.io/badge/vite-%23646CFF.svg?style=for-the-badge&logo=vite&logoColor=white)
-![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white)
-![Tailwind CSS](https://img.shields.io/badge/tailwindcss-%2338B2AC.svg?style=for-the-badge&logo=tailwind-css&logoColor=white)
+Create a `.env` file in the root directory. See `.env-example` for a template.
 
-#### Server
+| Variable               | Description                                                                        | Required |
+| ---------------------- | ---------------------------------------------------------------------------------- | -------- |
+| `NODE_ENV`             | Node environment                                                                   | No       |
+| `SKIP_PREFLIGHT_CHECK` | Skip CRA preflight check                                                           | No       |
+| `INSTANCE_DOMAIN`      | Topia API domain (`api.topia.io` for production, `api-stage.topia.io` for staging) | Yes      |
+| `INTERACTIVE_KEY`      | Topia interactive app key                                                          | Yes      |
+| `INTERACTIVE_SECRET`   | Topia interactive app secret                                                       | Yes      |
 
-![Node.js](https://img.shields.io/badge/node.js-%2343853D.svg?style=for-the-badge&logo=node.js&logoColor=white)
-![Express](https://img.shields.io/badge/express-%23000000.svg?style=for-the-badge&logo=express&logoColor=white)
+## Developers
 
 ### Getting Started
 
@@ -69,15 +83,9 @@ Structure of the world data object:
 
 ### Add your .env environmental variables
 
-```json
-API_KEY=xxxxxxxxxxxxx
-INSTANCE_DOMAIN=api.topia.io
-INSTANCE_PROTOCOL=https
-INTERACTIVE_KEY=xxxxxxxxxxxxx
-INTERACTIVE_SECRET=xxxxxxxxxxxxxx
-```
+See [Environment Variables](#environment-variables) above.
 
-### Where to find API_KEY, INTERACTIVE_KEY and INTERACTIVE_SECRET
+### Where to find INTERACTIVE_KEY and INTERACTIVE_SECRET
 
 [Topia Dev Account Dashboard](https://dev.topia.io/t/dashboard/integrations)
 
@@ -86,7 +94,3 @@ INTERACTIVE_SECRET=xxxxxxxxxxxxxx
 ### Helpful links
 
 - [SDK Developer docs](https://metaversecloud-com.github.io/mc-sdk-js/index.html)
-- [View it in action!](topia.io/appname-prod)
-- To see an example of an on canvas turn based game check out TicTacToe:
-  - (github))[https://github.com/metaversecloud-com/sdk-tictactoe]
-  - (demo))[https://topia.io/tictactoe-prod]
