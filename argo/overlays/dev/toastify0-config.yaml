@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: toastify0-config
+  labels:
+    app.kubernetes.io/name: toastify0
+data:
+  INSTANCE_DOMAIN: 'api.topia.io'
+  INSTANCE_PROTOCOL: 'https'
+  INTERACTIVE_KEY: 'peHtpIVY3Ff0WOskvSow'
+  NODE_ENV: 'production'
+  PORT: '3000'
