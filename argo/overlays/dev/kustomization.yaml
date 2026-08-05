@@ -26,4 +26,4 @@ patches:
 images:
   - name: toastify0
     newName: 368076259134.dkr.ecr.us-east-1.amazonaws.com/sdk-example
-    digest: sha256:4676f5ea3c70012230d173eefeb2281f17a2be24c2fa6c1db7eb90d16c9157d0
+    digest: sha256:0263c48c254ce9ef79f80f85406ed2638cc7e0a0b88a25da49b627678124b160
