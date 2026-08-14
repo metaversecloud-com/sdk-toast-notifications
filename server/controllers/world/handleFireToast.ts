@@ -6,7 +6,7 @@ import { World, errorHandler, getCredentials } from "../../utils/index.js";
 export const handleFireToast = async (req: Request, res: Response) => {
   try {
     const credentials = getCredentials(req.query);
-    const { profileId } = credentials;
+    const { profileId, urlSlug } = credentials;
 
     const world = World.create(credentials.urlSlug, { credentials });
 
@@ -27,7 +27,7 @@ export const handleFireToast = async (req: Request, res: Response) => {
     world.updateDataObject(
       {},
       {
-        analytics: [{ analyticName: "notifications_sent", uniqueKey: profileId }],
+        analytics: [{ analyticName: "notifications_sent", uniqueKey: profileId, urlSlug }],
       },
     );
 
