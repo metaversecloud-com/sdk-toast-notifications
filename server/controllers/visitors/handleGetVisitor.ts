@@ -4,7 +4,7 @@ import { Request, Response } from "express";
 export const handleGetVisitor = async (req: Request, res: Response): Promise<Record<string, any> | void> => {
   try {
     const credentials = getCredentials(req.query);
-    const { profileId } = credentials;
+    const { profileId, urlSlug } = credentials;
 
     const visitor = await getVisitor(credentials);
     const { isAdmin } = visitor;
@@ -12,14 +12,14 @@ export const handleGetVisitor = async (req: Request, res: Response): Promise<Rec
     visitor.updateDataObject(
       {},
       {
-        analytics: [{ analyticName: "starts", uniqueKey: profileId }],
+        analytics: [{ analyticName: "starts", profileId, urlSlug, uniqueKey: profileId }],
       },
     );
     if (!isAdmin) {
       visitor.updateDataObject(
         {},
         {
-          analytics: [{ analyticName: "starts_admin", uniqueKey: profileId }],
+          analytics: [{ analyticName: "starts_admin", uniqueKey: profileId, urlSlug }],
         },
       );
     }
