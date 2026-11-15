@@ -64,6 +64,11 @@ const GET_CREDENTIALS_DOESNT_THROW = "EXP-428 #6: getCredentials doesn't throw";
  * the platform tests can't read its body and time out. Cover an SSE route's credential checks in
  * tests/app instead (open it with page.request or fetch + AbortController and check the status).
  */
+// Not listed: POST /world/fire-toast. With missing OR foreign credentials its un-awaited analytics write
+// rejects and exits the process (EXP-462), and crashesServer only moves the missing-credentials test to a
+// private instance, so the foreign-credentials test would take the shared server down. Its credential
+// checks and secret scan live in tests/app/api.spec.ts. POST /world/handle-schedule-toast and
+// /world/handle-delete-toast throw "not yet available" before reading credentials (also in api.spec.ts).
 export const CREDENTIALED_ROUTES: RouteSpec[] = [
   { method: "get", path: "/visitor", knownBugs: { unnamedCredentialError: GET_CREDENTIALS_DOESNT_THROW } },
   {
