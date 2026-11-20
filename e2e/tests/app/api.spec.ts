@@ -24,7 +24,6 @@ test.describe("POST /api/world/fire-toast", () => {
       return { status: response.status, body: await response.json() };
     });
 
-    test.fail(true, BUG.unawaitedAnalyticsCrash);
     expect(alive, "the app process exited").toBe(true);
     expect(result!.status).toBeGreaterThanOrEqual(400);
     expect(result!.body.success).toBe(false);
@@ -40,7 +39,6 @@ test.describe("POST /api/world/fire-toast", () => {
       return { status: response.status, body: await response.json() };
     });
 
-    test.fail(true, BUG.unawaitedAnalyticsCrash);
     expect(alive, "the app process exited").toBe(true);
     expect(result!.status).toBeGreaterThanOrEqual(400);
     expect(result!.body.success).toBe(false);
@@ -119,7 +117,6 @@ test.describe("POST /api/world/fire-toast", () => {
 
     expect(result).toBe(200);
     expect(await world.events("world-toast")).toHaveLength(1);
-    test.fail(true, BUG.unawaitedAnalyticsCrash);
     expect(alive, "the app process exited").toBe(true);
   });
 });
@@ -150,7 +147,6 @@ test.describe("GET /api/visitor", () => {
     });
 
     expect(result).toBe(200);
-    test.fail(true, BUG.unawaitedAnalyticsCrash);
     expect(alive, "the app process exited").toBe(true);
   });
 });
